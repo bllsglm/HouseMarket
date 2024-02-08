@@ -1,7 +1,11 @@
+import SignIn from "./SignIn"
 
 const Profile = () => {
   return (
-    <div>Profile</div>
+    <div className="">
+      <SignIn/>
+      
+    </div>
   )
 }
 
