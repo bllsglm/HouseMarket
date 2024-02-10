@@ -1,5 +1,5 @@
 //imports
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword,signOut, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { firebaseAuth } from './BaseConfig';
 import { LoginFormValues, UserFormValues } from '../interfaces';
 
@@ -11,16 +11,26 @@ import { LoginFormValues, UserFormValues } from '../interfaces';
 setPersistence(firebaseAuth,  browserLocalPersistence);
 
 //Sign in functionality
-export const SignIn = async ({ email, password }: LoginFormValues) => {
+export const signIn = async ({ email, password }: LoginFormValues) => {
  const result = await signInWithEmailAndPassword(firebaseAuth, email, password);
  return result;
 };
 
 //Sign up functionality
-export const SignUp = async ({ email, password }: UserFormValues) => {
- const  result = await createUserWithEmailAndPassword(firebaseAuth, email, password);
- return result;
+export const signUp = async ({ email, password }: UserFormValues) => {
+ const  userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+
+ const user  = userCredential.user
+ 
+ return user;
 };
+
+// Update Profile
+// export const UpdateProfile = async ({ email, password }: UserFormValues) => {
+//   const  result = await updateProfile(firebaseAuth, email);
+//   return result;
+//  };
+ 
 
 //Sign out functionality
 export const  SignOut  =  async () => {

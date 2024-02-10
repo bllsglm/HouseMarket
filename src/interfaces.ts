@@ -6,5 +6,5 @@ export interface LoginFormValues {
  export interface UserFormValues {
   email: string;
   password: string;
-  displayName: string;
+  // displayName: string;
  }

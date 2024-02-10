@@ -18,5 +18,5 @@ const  app  =  initializeApp ({
 // Initialize Firebase
 export const firebaseAuth = getAuth(app);
 export default app;
-export const analytics = getAnalytics(app);
 export const db = getFirestore()
+export const analytics = getAnalytics(app);

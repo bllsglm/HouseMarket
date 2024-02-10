@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import ArrowRightIcon from '../assets/icons/KeyboardArrowRightIcon.tsx'
 import VisibilityIcon from '../assets/icons/VisibilityIcon.tsx'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { firebaseAuth } from '../firebase/BaseConfig.ts'
+import { toast } from 'react-toastify';
 
 
 
@@ -10,12 +13,29 @@ const SignIn = () => {
   const [formData, setFormData] = useState({email:'', password:''})
   const { email, password } = formData
 
-  const handleChange = (e:React.ChangeEvent) => {
-    const { name, value } = e.target;
+  const navigate = useNavigate()
+
+  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
     setFormData((previous) => ({
       ...previous,
       [name]: value
     }))
+  }
+
+  const submitHandler = async(e : React.FormEvent) => {
+    e.preventDefault()
+   try {
+    const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
+    
+    if(userCredential.user){
+      
+      navigate('/profile')
+      toast.success(`Welcome ${userCredential.user.displayName}`)
+    }
+  } catch (err) {
+    toast.error(err?.data?.message || err.message)
+   }
   }
 
   return (
@@ -26,7 +46,7 @@ const SignIn = () => {
           <p className='text-sm sm:text-lg lg:text-xl mb-1'>Welcome Back!</p>
         </header>
         <main className='shadow-lg'>
-          <form className="flex flex-col rounded p-8 mb-4">
+          <form className="flex flex-col rounded p-8 mb-4" onSubmit={submitHandler}>
             <input 
               className='border-b-2 outline-none h-10' 
               type="email" 

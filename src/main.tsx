@@ -12,7 +12,7 @@ import ForgotPassword from './pages/ForgotPassword.tsx'
 
 const router = createBrowserRouter(createRoutesFromElements(
   <Route path='/' element={<App/>}>
-    <Route index path="/explore" element={<Explore/>}/>
+    <Route index path="/" element={<Explore/>}/>
     <Route path="/offers" element={<Offers/>}/>
     <Route path="/profile" element={<Profile/>}/>
     <Route path="/signIn" element={<SignIn/>}/>
