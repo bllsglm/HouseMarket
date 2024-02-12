@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { firebaseAuth } from '../firebase/BaseConfig.ts'
 import { toast } from 'react-toastify';
+import OAuth from '../components/OAuth.tsx'
 
 
 
@@ -41,9 +42,9 @@ const SignIn = () => {
   return (
     <>
      
-      <div className='container min-h-screen mx-auto flex flex-col justify-center items-center'>
+      <div className='container h-screen mx-auto flex flex-col justify-center items-center'>
         <header>
-          <p className='text-sm sm:text-lg lg:text-xl mb-1'>Welcome Back!</p>
+          <p className='sm:text-lg lg:text-xl mb-1'>Welcome Back!</p>
         </header>
         <main className='shadow-lg'>
           <form className="flex flex-col rounded p-8 mb-4" onSubmit={submitHandler}>
@@ -79,7 +80,12 @@ const SignIn = () => {
             <Link to='/forgotpassword' className=' right-0 top-12 text-green-800 text-sm'>Forgot Password</Link>
             <p className='text-sm mt-4'>Don't have an account? <Link className='text-blue-500' to='/signUp'> Sign Up </Link></p>
           </form>
-          {/* Google OAuth */}
+          
+          <div className='flex flex-col justify-center items-center mb-2'>
+             <p className='mb-1 text-gray-500'>Sign In with your Google Account</p>
+             <OAuth/>
+          </div>
+         
         </main>
         
       </div>

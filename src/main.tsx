@@ -9,15 +9,18 @@ import Profile from './pages/Profile';
 import SignIn  from './pages/SignIn.tsx';
 import SignUp from './pages/SignUp';
 import ForgotPassword from './pages/ForgotPassword.tsx'
+import PrivateRoute from './components/PrivateRoute.tsx'
 
 const router = createBrowserRouter(createRoutesFromElements(
   <Route path='/' element={<App/>}>
     <Route index path="/" element={<Explore/>}/>
     <Route path="/offers" element={<Offers/>}/>
-    <Route path="/profile" element={<Profile/>}/>
     <Route path="/signIn" element={<SignIn/>}/>
     <Route path="/signUp" element={<SignUp/>}/>
     <Route path="/forgotpassword" element={<ForgotPassword/>}/>
+    <Route path='' element={< PrivateRoute/>}>
+      <Route path="/profile" element={<Profile/>}/>
+    </Route>
   </Route>
 )) 
 

@@ -6,6 +6,7 @@ import { updateProfile , createUserWithEmailAndPassword} from 'firebase/auth'
 import { firebaseAuth, db } from '../firebase/BaseConfig.ts'
 import { setDoc, doc,serverTimestamp } from 'firebase/firestore'
 import { toast } from 'react-toastify';
+import OAuth from '../components/OAuth.tsx'
 
 
 const SignUp = () => {
@@ -105,7 +106,10 @@ const SignUp = () => {
             <p className='text-sm mt-4'>Already have an account? <Link className='text-blue-500' to='/signIn'> Sign In </Link></p>
 
           </form>
-          {/* Google OAuth */}
+          <div className='flex flex-col justify-center items-center mb-2'>
+             <p className='mb-1 text-gray-500'>Sign Up with your Google Account</p>
+             <OAuth/>
+          </div>
         </main>
         
       </div>
