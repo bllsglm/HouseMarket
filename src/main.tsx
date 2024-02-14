@@ -10,11 +10,13 @@ import SignIn  from './pages/SignIn.tsx';
 import SignUp from './pages/SignUp';
 import ForgotPassword from './pages/ForgotPassword.tsx'
 import PrivateRoute from './components/PrivateRoute.tsx'
+import Category from './pages/Category.tsx'
 
 const router = createBrowserRouter(createRoutesFromElements(
   <Route path='/' element={<App/>}>
     <Route index path="/" element={<Explore/>}/>
     <Route path="/offers" element={<Offers/>}/>
+    <Route path="/category/:categoryName" element={<Category/>}/>
     <Route path="/signIn" element={<SignIn/>}/>
     <Route path="/signUp" element={<SignUp/>}/>
     <Route path="/forgotpassword" element={<ForgotPassword/>}/>

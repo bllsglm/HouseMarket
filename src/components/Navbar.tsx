@@ -15,9 +15,9 @@ const Navbar = () => {
 
 
   return (
-    <footer className='fixed bottom-0  w-full bg-slate-100'>
+    <footer className='fixed bottom-0  w-full bg-slate-100 '>
       <nav className='container mx-auto'>
-        <ul className='flex justify-evenly py-4'>
+        <ul className='flex justify-evenly py-1'>
           <li className='flex flex-col items-center'>
             <Link to='/'>
               <ExploreIcon fill={matchPath('/')} width='36px' height='36px'/>
