@@ -107,7 +107,7 @@ const SignUp = () => {
 
           </form>
           <div className='flex flex-col justify-center items-center mb-2'>
-             <p className='mb-1 text-gray-500'>Sign Up with your Google Account</p>
+             <p className='mb-1 text-gray-500'>Sign Up with</p>
              <OAuth/>
           </div>
         </main>

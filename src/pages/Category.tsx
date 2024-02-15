@@ -51,10 +51,12 @@ const Category = () => {
   }, [params.categoryName])
 
   
+ 
+  
   return (
-    <div>
+    <div className="container mx-auto mt-4">
       <header>
-        <p>
+        <p className="mb-4 font-extrabold capitalize text-2xl">
           {params.categoryName === 'rent' ? 'Places for rent' : 'Places for sale'}
         </p>
       </header>
@@ -64,7 +66,6 @@ const Category = () => {
           <ul>
             {listings.map((listing) => (
               <h3 key={listing.id}>
-                {listing.data.name}
                 <ListingItem listing={listing.data} id={listing.id} key={listing.id}/>
               </h3>
             ))}

@@ -1,10 +1,15 @@
 import {useState } from "react"
 import { firebaseAuth } from "../firebase/BaseConfig"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { db } from "../firebase/BaseConfig"
 import { updateProfile } from "firebase/auth"
 import { doc, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
+import ArrowRightIcon from "../assets/svg/keyboardArrowRightIcon.svg"
+import HomeIcon from '../assets/svg/homeIcon.svg';
+
+HomeIcon
+ArrowRightIcon
 
 const Profile = () => {
   const [changeDetails, setChangeDetails] = useState(false)
@@ -94,8 +99,12 @@ const Profile = () => {
             />
 
           </form>
-        </div>
-
+        </div >
+            <Link to='/create-listing' className="flex justify-center sm:w-1/2 sm:mx-auto items-center gap-8 shadow w-auto m-2 p-4 rounded-lg bg-gray-200 border  hover:border-green-900 hover:bg-green-100">
+              <img src={HomeIcon} alt="home" />
+              <p>Sell or rent your home</p>
+              <img src={ArrowRightIcon} alt="arrow-right" />
+            </Link>
       </main>
     </div>
   )

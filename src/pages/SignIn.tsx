@@ -82,7 +82,7 @@ const SignIn = () => {
           </form>
           
           <div className='flex flex-col justify-center items-center mb-2'>
-             <p className='mb-1 text-gray-500'>Sign In with your Google Account</p>
+             <p className='mb-1 text-gray-500'>Sign In with</p>
              <OAuth/>
           </div>
          
