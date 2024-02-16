@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import { db } from '../firebase/BaseConfig';
-useNavigate
+import {v4 as uuidv4} from 'uuid'
 import {
   getStorage,
   ref,
@@ -15,13 +15,10 @@ import {
 } from 'firebase/storage'
 
 
-useNavigate
-Spinner
-useRef
 
 const CreateListing = () => {
   const [loading, setLoading] = useState(false)
-  const [geoLocationEnabled, setGeoLocationEnabled] = useState(false)
+  const [geoLocationEnabled, setGeoLocationEnabled] = useState(true)
   const [formData, setFormData] = useState({
     type: 'rent',
     name: '',
@@ -97,16 +94,20 @@ const CreateListing = () => {
       return
     }
 
+
+    // Geolocation & Location
     let geolocation = {}
     let location
 
-    if (geolocationEnabled) {
+    
+    if (geoLocationEnabled) {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${import.meta.env.VITE_GEOCODE_API_KEY}`
       )
 
       const data = await response.json()
-
+      // console.log(data);
+      
       geolocation.lat = data.results[0]?.geometry.location.lat ?? 0
       geolocation.lng = data.results[0]?.geometry.location.lng ?? 0
 
@@ -115,7 +116,8 @@ const CreateListing = () => {
           ? undefined
           : data.results[0]?.formatted_address
 
-      if (location === undefined || location.includes('undefined')) {
+
+    if (location === undefined || location.includes('undefined')) {
         setLoading(false)
         toast.error('Please enter a correct address')
         return
@@ -123,6 +125,9 @@ const CreateListing = () => {
     } else {
       geolocation.lat = latitude
       geolocation.lng = longitude
+      location = address
+      // console.log(geolocation, location);
+      
     }
 
     // Store image in firebase
@@ -166,7 +171,7 @@ const CreateListing = () => {
       })
     }
 
-    const imgUrls = await Promise.all(
+    const imageUrls = await Promise.all(
       [...images].map((image) => storeImage(image))
     ).catch(() => {
       setLoading(false)
@@ -174,14 +179,16 @@ const CreateListing = () => {
       return
     })
 
+    console.log(imageUrls);
+    
     const formDataCopy = {
       ...formData,
-      imgUrls,
+      imageUrls,
       geolocation,
       timestamp: serverTimestamp(),
     }
 
-    formDataCopy.location = address
+    location && (formDataCopy.location = address)
     delete formDataCopy.images
     delete formDataCopy.address
     !formDataCopy.offer && delete formDataCopy.discountedPrice
@@ -226,19 +233,20 @@ const CreateListing = () => {
 
  
   return (
-    <div className="flex items-center justify-center min-h-screen">
-    <div className="w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4 p-6 bg-white shadow-md rounded-lg overflow-y-auto">
+    <div className="flex items-center justify-center min-h-screen mb-16 bg-gray-200">
+    <div className="w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4 p-6 bg-white shadow-md rounded-lg">
       <header className="mb-6">
         <p className="text-2xl font-bold">Create a Listing</p>
       </header>
 
       <form onSubmit={onSubmit} className="space-y-4">
-          <label className="block mb-2 font-semibold">Sell / Rent</label>
+          <label className="block mb-2 font-semibold">Sell / Rent
+          </label>
           <div className="flex mb-4">
             <button
               type="button"
               className={`flex-1 mr-2 py-2 text-white font-semibold ${
-                type === 'sale' ? 'bg-blue-500' : 'bg-gray-400'
+                type === 'sale' ? 'bg-green-500' : 'bg-gray-400'
               }`}
               id="type"
               value="sale"
@@ -249,7 +257,7 @@ const CreateListing = () => {
             <button
               type="button"
               className={`flex-1 py-2 text-white font-semibold ${
-                type === 'rent' ? 'bg-blue-500' : 'bg-gray-400'
+                type === 'rent' ? 'bg-green-500' : 'bg-gray-400'
               }`}
               id="type"
               value="rent"
@@ -266,8 +274,8 @@ const CreateListing = () => {
             id="name"
             value={name}
             onChange={onMutate}
-            maxLength="32"
-            minLength="10"
+            maxLength={32}
+            minLength={10}
             required
           />
   
@@ -304,7 +312,7 @@ const CreateListing = () => {
           <div className="flex mb-4">
             <button
               className={`flex-1 mr-2 py-2 text-white font-semibold ${
-                parking ? 'bg-blue-500' : 'bg-gray-400'
+                parking ? 'bg-green-500' : 'bg-gray-400'
               }`}
               type="button"
               id="parking"
@@ -317,7 +325,7 @@ const CreateListing = () => {
             </button>
             <button
               className={`flex-1 py-2 text-white font-semibold ${
-                !parking && parking !== null ? 'bg-blue-500' : 'bg-gray-400'
+                !parking && parking !== null ? 'bg-green-500' : 'bg-gray-400'
               }`}
               type="button"
               id="parking"
@@ -332,7 +340,7 @@ const CreateListing = () => {
           <div className="flex mb-4">
             <button
               className={`flex-1 mr-2 py-2 text-white font-semibold ${
-                furnished ? 'bg-blue-500' : 'bg-gray-400'
+                furnished ? 'bg-green-500' : 'bg-gray-400'
               }`}
               type="button"
               id="furnished"
@@ -343,7 +351,7 @@ const CreateListing = () => {
             </button>
             <button
               className={`flex-1 py-2 text-white font-semibold ${
-                !furnished && furnished !== null ? 'bg-blue-500' : 'bg-gray-400'
+                !furnished && furnished !== null ? 'bg-green-500' : 'bg-gray-400'
               }`}
               type="button"
               id="furnished"
@@ -364,7 +372,7 @@ const CreateListing = () => {
             required
           />
   
-          <div className="flex mb-4">
+      {!geoLocationEnabled && <div className="flex mb-4">
             <div className="mr-4">
               <label className="block mb-2 font-semibold">Latitude</label>
               <input
@@ -388,12 +396,13 @@ const CreateListing = () => {
               />
             </div>
           </div>
+          }
   
           <label className="block mb-2 font-semibold">Offer</label>
           <div className="flex mb-4">
             <button
               className={`flex-1 mr-2 py-2 text-white font-semibold ${
-                offer ? 'bg-blue-500' : 'bg-gray-400'
+                offer ? 'bg-green-500' : 'bg-gray-400'
               }`}
               type="button"
               id="offer"
@@ -404,7 +413,7 @@ const CreateListing = () => {
             </button>
             <button
               className={`flex-1 py-2 text-white font-semibold 
-                ${!offer && offer !== null ? 'bg-blue-500' : 'bg-gray-400'
+                ${!offer && offer !== null ? 'bg-green-500' : 'bg-gray-400'
               }`}
               type="button"
               id="offer"
@@ -465,7 +474,7 @@ const CreateListing = () => {
   
           <button
           type="submit"
-          className="w-full py-3 font-semibold text-white bg-blue-500 rounded hover:bg-blue-600"
+          className="w-full py-3 font-semibold text-white bg-blue-500 rounded hover:bg-opacity-80 "
           >
           Create Listing
           </button>
