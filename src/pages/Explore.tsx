@@ -17,7 +17,7 @@ const Explore = () => {
         <img className="rounded-2xl h-80 w-auto max-w-full" src={rentCategoryImage} alt="Places for Rent" />
         <p className="absolute bottom-0 left-0 right-0 text-center bg-white bg-opacity-75">Places for Rent</p>
       </Link>
-      <Link to='/category/sell' className="relative mb-10">
+      <Link to='/category/sale' className="relative mb-10">
         <img className="rounded-2xl h-80 w-auto max-w-full" src={sellCategoryImage} alt="Places for Sale" />
         <p className="absolute bottom-0 left-0 right-0 text-center bg-white bg-opacity-75">Places for Sale</p>
       </Link>

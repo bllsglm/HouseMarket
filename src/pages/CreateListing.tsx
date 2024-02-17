@@ -124,10 +124,7 @@ const CreateListing = () => {
       }
     } else {
       geolocation.lat = latitude
-      geolocation.lng = longitude
-      location = address
-      // console.log(geolocation, location);
-      
+      geolocation.lng = longitude      
     }
 
     // Store image in firebase
@@ -188,7 +185,7 @@ const CreateListing = () => {
       timestamp: serverTimestamp(),
     }
 
-    location && (formDataCopy.location = address)
+    formDataCopy.location = address
     delete formDataCopy.images
     delete formDataCopy.address
     !formDataCopy.offer && delete formDataCopy.discountedPrice

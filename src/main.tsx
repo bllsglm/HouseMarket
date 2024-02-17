@@ -12,6 +12,7 @@ import ForgotPassword from './pages/ForgotPassword.tsx'
 import PrivateRoute from './components/PrivateRoute.tsx'
 import Category from './pages/Category.tsx'
 import CreateListing from './pages/CreateListing.tsx'
+import Listing from './pages/Listing.tsx'
 
 const router = createBrowserRouter(createRoutesFromElements(
   <Route path='/' element={<App/>}>
@@ -22,6 +23,7 @@ const router = createBrowserRouter(createRoutesFromElements(
     <Route path="/signUp" element={<SignUp/>}/>
     <Route path="/forgotpassword" element={<ForgotPassword/>}/>
     <Route path="/create-listing" element={<CreateListing/>}/>
+    <Route path="/category/:categoryName/:listingId" element={<Listing/>}/>
     <Route path='' element={< PrivateRoute/>}>
       <Route path="/profile" element={<Profile/>}/>
     </Route>
