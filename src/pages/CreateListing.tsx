@@ -176,7 +176,6 @@ const CreateListing = () => {
       return
     })
 
-    console.log(imageUrls);
     
     const formDataCopy = {
       ...formData,
