@@ -11,15 +11,19 @@
   },
   "dependencies": {
     "firebase": "^10.8.0",
+    "leaflet": "^1.9.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.22.0",
     "react-toastify": "^10.0.4",
+    "swiper": "^11.0.6",
     "uuid": "^9.0.1",
     "vite-plugin-svgr": "^4.2.0"
   },
   "devDependencies": {
     "@svgr/core": "^8.1.0",
+    "@types/leaflet": "^1.9.8",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@types/uuid": "^9.0.8",

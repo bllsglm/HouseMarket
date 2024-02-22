@@ -8,8 +8,7 @@ import { toast } from "react-toastify"
 import ArrowRightIcon from "../assets/svg/keyboardArrowRightIcon.svg"
 import HomeIcon from '../assets/svg/homeIcon.svg';
 
-HomeIcon
-ArrowRightIcon
+
 
 const Profile = () => {
   const [changeDetails, setChangeDetails] = useState(false)
@@ -17,6 +16,8 @@ const Profile = () => {
     name : firebaseAuth.currentUser?.displayName,
     email : firebaseAuth.currentUser?.email
   })
+  console.log('current user is : ', firebaseAuth.currentUser);
+  
 
   const {name, email} = formdata
 
