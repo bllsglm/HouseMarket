@@ -5,7 +5,6 @@ import { db, firebaseAuth } from "../firebase/BaseConfig"
 import Spinner from "../components/Spinner"
 import shareIcon from "../assets/svg/shareIcon.svg"
 import { toast } from "react-toastify"
-
 import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
 
 
@@ -56,11 +55,11 @@ if(loading){
           <img src={shareIcon} alt="shareIcon" />
         </div>
 
-        {shareLinkCopied && <p>Link Copied!</p>}
+        {shareLinkCopied && <p className="text-green-600">Link Copied!</p>}
         <p className="mt-4 font-extrabold text-lg">
           {listing.name} - {listing.offer ? Number(listing.discountedPrice).toLocaleString('en-US') : Number(listing.regularPrice).toLocaleString('en-US')}
         </p>
-        <p>{listing.useLocation} </p>
+        <p>{listing.useLocation}  </p>
         <p>{listing.type === 'rent' ? 'Rent' : 'Sale'} </p>
         {listing.offer && (<p>You're saving ${(listing.regularPrice - listing.discountedPrice).toLocaleString() }</p>
         )}
