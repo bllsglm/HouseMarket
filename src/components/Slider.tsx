@@ -84,7 +84,7 @@ const Slider = () => {
               className="w-full h-full"
               style={{
                 background : `url(${dataPoint.image}) center no-repeat`,
-                backgroundSize: 'cover'
+                backgroundSize: 'cover',
               }}
               ></div>
               </Link>

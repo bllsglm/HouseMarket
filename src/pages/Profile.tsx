@@ -7,6 +7,7 @@ import { doc, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
 import ArrowRightIcon from "../assets/svg/keyboardArrowRightIcon.svg"
 import HomeIcon from '../assets/svg/homeIcon.svg';
+import MyListings from "../components/MyListings"
 
 
 
@@ -16,7 +17,6 @@ const Profile = () => {
     name : firebaseAuth.currentUser?.displayName,
     email : firebaseAuth.currentUser?.email
   })
-  console.log('current user is : ', firebaseAuth.currentUser);
   
 
   const {name, email} = formdata
@@ -107,6 +107,12 @@ const Profile = () => {
               <img src={ArrowRightIcon} alt="arrow-right" />
             </Link>
       </main>
+      {/* LISTINGS */}
+  
+      <MyListings/>
+      
+      
+      
     </div>
   )
   }

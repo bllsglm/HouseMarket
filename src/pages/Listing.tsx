@@ -82,7 +82,7 @@ const Listing = () => {
 
           {shareLinkCopied && <p className="text-green-600">Link Copied!</p>}
           <p className="mt-4 font-extrabold text-lg">
-            {listing.name} - {listing.offer ? Number(listing.discountedPrice).toLocaleString('en-US') : Number(listing.regularPrice).toLocaleString('en-US')}
+            {listing.name} - ${listing.offer ? Number(listing.discountedPrice).toLocaleString('en-US') : Number(listing.regularPrice).toLocaleString('en-US')}
           </p>
           <p>{listing.location}  </p>
           <p>{listing.type === 'rent' ? 'Rent' : 'Sale'} </p>
