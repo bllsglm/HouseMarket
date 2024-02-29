@@ -2,6 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider  } from 'react-router-dom'
 import Explore from './pages/Explore';
 import Offers from './pages/Offers';
@@ -14,6 +18,8 @@ import Category from './pages/Category.tsx'
 import CreateListing from './pages/CreateListing.tsx'
 import Listing from './pages/Listing.tsx'
 import Contact from './pages/Contact.tsx'
+
+
 
 const router = createBrowserRouter(createRoutesFromElements(
   <Route path='/' element={<App/>}>
