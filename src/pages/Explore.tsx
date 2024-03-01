@@ -9,7 +9,7 @@ const Explore = () => {
   <div className="container mx-auto flex flex-col justify-center items-center ">
     <header>
       <p className="m-8 text-4xl font-extrabold ">Explore</p>
-      <p className="text-center  font-extrabold  bg-orange-200">Recommended</p>
+      <p className="text-center  font-extrabold">Recommended</p>
     </header>
     
     <Slider/>

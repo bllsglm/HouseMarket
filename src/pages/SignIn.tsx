@@ -44,12 +44,12 @@ const SignIn = () => {
      
       <div className='container h-screen mx-auto flex flex-col justify-center items-center'>
         <header>
-          <p className='sm:text-lg lg:text-xl mb-1'>Welcome Back!</p>
+          <p className='text-2xl mb-1 font-extrabold'>Welcome Back!</p>
         </header>
-        <main className='shadow-lg'>
-          <form className="flex flex-col rounded p-8 mb-4" onSubmit={submitHandler}>
+        <main className='shadow-2xl border border-black m-4'>
+          <form className="flex flex-col rounded p-8 mb-4 gap-4" onSubmit={submitHandler}>
             <input 
-              className='border-b-2 outline-none h-10' 
+              className='border-b-2 outline-none h-10 rounded-lg p-4' 
               type="email" 
               name="email" 
               id="email" 
@@ -59,7 +59,7 @@ const SignIn = () => {
             />
             <div className='relative'>
               <input 
-              className='border-b-2 outline-none h-10' 
+              className='border-b-2 outline-none h-10 rounded-lg p-4' 
               type={showPassword ? 'text' : 'password'}
               name="password" 
               id="password" 
@@ -73,7 +73,7 @@ const SignIn = () => {
               />
             </div>
             <div className='relative'>
-               <button type="submit" className='my-2 w-full text-white bg-blue-500 p-1 rounded-full'>Sign In </button>
+               <button type="submit" className='my-2 w-full text-white bg-blue-500 p-1 rounded-full hover:bg-opacity-70'>Sign In </button>
                <ArrowRightIcon className='absolute right-0 top-0 w-8 h-12 cursor-pointer' fill='#fff'/>
             </div>
            

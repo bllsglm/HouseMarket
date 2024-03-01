@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css'
 function App() {
 
   return (
-    <div>
+    <div className="bg-slate-300 min-h-screen">
       <Outlet/>
       <Navbar/>
       <ToastContainer/>

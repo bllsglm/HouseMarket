@@ -59,57 +59,58 @@ const Profile = () => {
   }
 
   return (
-    <div className="container mx-auto">
-      <header className="w-full py-2  flex container mx-auto  items-center">
-          <p className="flex-1 text-3xl font-extrabold">My Profile</p>
-          <button className="bg-black outline-none rounded-full text-white p-3 shadow-lg hover:scale-95 hover:bg-opacity-80" type='button' onClick={logout}>Sign Out</button>
+    <div className="container mx-auto bg-gray-200 min-h-screen">
+
+      <header className="w-full rounded p-4  flex container mx-auto  items-center  bg-gray-800">
+          <p className="flex-1 text-3xl font-extrabold text-white">My Profile</p>
+          <button className="bg-black outline-none rounded-full text-white p-3 shadow-lg hover:scale-95 hover:bg-opacity-50 border border-white font-extrabold" type='button' onClick={logout}>Sign Out</button>
       </header>
 
       <main>
-        <div className="py-2 flex">
-          <p className="flex-1">Personal Details</p>
+        <div className="py-2 flex flex-col justify-center items-center gap-4">
+          <h2 className="text-2xl font-extrabold text-black max-w-max rounded-3xl">Personal Details</h2>
           <p 
-            className="font-bold text-green-700"
+            className="font-bold text-green-700 bg-gray-100 rounded-3xl p-4 cursor-pointer border-green-500 border-2 hover:bg-green-100 "
             onClick={()=> {
               changeDetails && onSubmit()
               setChangeDetails(prevState => !prevState)
             }}
-            >{ changeDetails ? 'done' : 'change'}
+            >{ changeDetails ? 'Done' : 'Change'}
           </p>
         </div>
 
-        <div>
-          <form>
-
+        <div className="flex  justify-center items-center font-extrabold p-8 text-center gap-4 ">
+          <form className="flex gap-4 sm:flex-row flex-col ">
             <input 
               type="text" 
               id="name" 
-              className={!changeDetails ? 'profileName' : 'profileNameActive'}
+              className="p-4 mr-2 rounded-2xl border border-black"
               disabled={!changeDetails}
               value={name}
               onChange={onChange}
             />
-
             <input 
               type="text" 
               id="email" 
-              className={!changeDetails ? 'profileEmail' : 'profileEmailActive'}
+              className = 'p-4 rounded-2xl  border border-black'
               disabled={!changeDetails}
               value={email}
               onChange={onChange}
             />
-
           </form>
         </div >
-            <Link to='/create-listing' className="flex justify-center sm:w-1/2 sm:mx-auto items-center gap-8 shadow w-auto m-2 p-4 rounded-lg bg-gray-200 border  hover:border-green-900 hover:bg-green-100">
+
+            <Link to='/create-listing' className="flex justify-center items-center gap-8 shadow mx-auto max-w-max p-4 rounded-lg bg-gray-200 hover:bg-green-100 border-2 border-green-500">
               <img src={HomeIcon} alt="home" />
-              <p>Sell or rent your home</p>
+              <p className="font-extrabold">Sell or rent your home</p>
               <img src={ArrowRightIcon} alt="arrow-right" />
             </Link>
       </main>
       {/* LISTINGS */}
-  
-      <MyListings/>
+      <div className="m-4 p-12 flex justify-center items-center">
+        <MyListings/>
+      </div>
+      
       
       
       

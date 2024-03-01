@@ -2,3 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+
+.del-button::after {
+  content: 'Delete this listing';
+  /* position: absolute; */
+  right: 50%;
+  width: fit-content;
+  height: 5px;
+  display: none;
+}
+
+.del-button:hover::after {
+  display: block;
+}

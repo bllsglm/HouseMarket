@@ -52,9 +52,9 @@ const Offer = () => {
  
   
   return (
-    <div className="container mx-auto mt-4">
+    <div className="container mx-auto max-w-max ">
       <header>
-        <p className="mb-4 font-extrabold capitalize text-2xl">
+        <p className="font-extrabold capitalize text-2xl p-4">
           Offers
         </p>
       </header>
