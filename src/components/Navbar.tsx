@@ -15,7 +15,7 @@ const Navbar = () => {
 
 
   return (
-    <footer className='fixed bottom-0 w-screen bg-slate-100 z-50'>
+    <footer className='fixed bottom-0  w-screen bg-slate-100 z-50'>
       <nav className='container mx-auto'>
         <ul className='flex justify-evenly py-1'>
           <li className='flex flex-col items-center'>

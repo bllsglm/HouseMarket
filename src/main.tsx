@@ -18,6 +18,7 @@ import Category from './pages/Category.tsx'
 import CreateListing from './pages/CreateListing.tsx'
 import Listing from './pages/Listing.tsx'
 import Contact from './pages/Contact.tsx'
+import EditListing from './pages/EditListing.tsx';
 
 
 
@@ -34,6 +35,7 @@ const router = createBrowserRouter(createRoutesFromElements(
     <Route path="/category/:categoryName/:listingId" element={<Listing/>}/>
     <Route path='' element={< PrivateRoute/>}>
       <Route path="/profile" element={<Profile/>}/>
+      <Route path="/edit-listing/:listingId" element={<EditListing/>}/>
     </Route>
   </Route>
 )) 

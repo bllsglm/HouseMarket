@@ -2,16 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
-
-.del-button::after {
-  content: 'Delete this listing';
-  /* position: absolute; */
-  right: 50%;
+.del-button {
   width: fit-content;
-  height: 5px;
-  display: none;
+  height: fit-content;
+  position: relative;
 }
 
-.del-button:hover::after {
+.del-button::before {
+  content: 'Delete Listing';
+  position: absolute;
+  bottom: 100%;
+  left: calc(100% + 1px); /* Adjust this value as needed */
+  width: fit-content;
+  white-space: nowrap;
+  display: none;
+  font-weight: 600;
+  background-color: red; /* Add a background color for better visibility */
+  padding: 10px;
+  border-radius: 10px;
+  color: #fff;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); /* Add a box shadow for better visibility */
+}
+
+.del-button:hover::before {
+  display: block;
+}
+
+
+/* EDIT BUTTON */
+
+.edit-button {
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+}
+
+.edit-button::before {
+  content: 'Edit Listing';
+  position: absolute;
+  bottom: 100%;
+  left: calc(100% + 1px); /* Adjust this value as needed */
+  width: fit-content;
+  white-space: nowrap;
+  display: none;
+  font-weight: 600;
+  background-color: white; /* Add a background color for better visibility */
+  padding: 10px;
+  border-radius: 10px;
+  color: #333;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); /* Add a box shadow for better visibility */
+}
+
+.edit-button:hover::before {
   display: block;
 }

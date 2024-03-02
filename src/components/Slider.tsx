@@ -39,10 +39,8 @@ const Slider = () => {
           })
 
           imagesList.push(...doc.data().imageUrls)
-          console.log('listings is : ' , imagesList);
           
         })
-        console.log('data is :',data);
         
 
         // setListings(imagesList)

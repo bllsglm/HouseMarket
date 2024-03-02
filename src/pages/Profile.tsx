@@ -24,10 +24,8 @@ const Profile = () => {
   const navigate = useNavigate()
 
   const logout = async() => {
-    console.log(firebaseAuth.currentUser);
     await firebaseAuth.signOut()
     navigate('/')
-    console.log(firebaseAuth.currentUser);
   }
 
   const onSubmit = async() => {
@@ -107,7 +105,7 @@ const Profile = () => {
             </Link>
       </main>
       {/* LISTINGS */}
-      <div className="m-4 p-12 flex justify-center items-center">
+      <div className="mb-8 pb-8 flex flex-col justify-center items-center">
         <MyListings/>
       </div>
       

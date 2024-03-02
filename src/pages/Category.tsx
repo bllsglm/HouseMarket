@@ -6,11 +6,12 @@ import { toast } from "react-toastify"
 import Spinner from "../components/Spinner"
 import ListingItem from '../components/ListingItem';
 
-
+startAfter
 
 const Category = () => {
   const [listings, setListings] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [lastFetchedListing , setLastFetchListing] = useState(null) 
 
   const params = useParams()
 
@@ -30,6 +31,9 @@ const Category = () => {
           
         // Execute query
         const querySnap = await getDocs(q)
+        const lastVisible = querySnap.docs[querySnap.docs.length - 1]
+        setLastFetchListing(lastVisible)
+
         const listings = []
 
         querySnap.forEach((doc) => {
@@ -50,13 +54,51 @@ const Category = () => {
     fetchListings()
   }, [params.categoryName])
 
+
+  // PAGINATION / LOAD MORE
+  const onFetchMoreListings = async() => {
+    try {
+      // Get a reference 
+      const listingsRef = collection(db, 'listings')
+
+      // Create a query
+      const q = query(
+        listingsRef, 
+        where('type', '==', params.categoryName), 
+        orderBy('timestamp', 'desc'), 
+        startAfter(lastFetchedListing),
+        limit(10)
+      )
+        
+      // Execute query
+      const querySnap = await getDocs(q)
+      const lastVisible = querySnap.docs[querySnap.docs.length - 1]
+      setLastFetchListing(lastVisible)
+
+      const listings = []
+
+      querySnap.forEach((doc) => {
+        return listings.push({
+          id: doc.id,
+          data: doc.data()
+        })
+      })
+
+      setListings(prevState => [...listings, ...prevState])
+      setLoading(false)
+
+    } catch (error) {
+      toast.error('There are no more listings to display')
+    }
+  }
+
   
  
   
   return (
-    <div className="container mx-auto mt-4">
+    <div className="container mx-auto p-4">
       <header>
-        <p className="mb-4 font-extrabold capitalize text-2xl">
+        <p className="mb-4 font-extrabold capitalize text-4xl">
           {params.categoryName === 'rent' ? 'Places for rent' : 'Places for sale'}
         </p>
       </header>
@@ -75,6 +117,14 @@ const Category = () => {
       ) : (
       <p> No listings for {params.categoryName}</p>
     )}
+    <div className="flex justify-center items-center mb-12">
+      <button 
+        className=" bg-gray-700 p-4 m-4  border-2 border-black rounded-full text-white hover:bg-opacity-75 font-extrabold shadow-2xl"
+        onClick={onFetchMoreListings}
+      >
+        Load More...
+      </button>
+    </div>
     </div>
   )
 }

@@ -85,7 +85,7 @@ const Listing = () => {
             {listing.name} - ${listing.offer ? Number(listing.discountedPrice).toLocaleString('en-US') : Number(listing.regularPrice).toLocaleString('en-US')}
           </p>
           <p>{listing.location}  </p>
-          <p>{listing.type === 'rent' ? 'Rent' : 'Sale'} </p>
+          <p>For {listing.type === 'rent' ? 'Rent' : 'Sale'} </p>
           {listing.offer && (<p>You're saving ${(listing.regularPrice - listing.discountedPrice).toLocaleString() }</p>
           )}
           <ul className="listingDetailsList">
@@ -100,7 +100,7 @@ const Listing = () => {
 
           { firebaseAuth.currentUser?.uid !== listing.userRef && (
             <Link 
-            className="m-4 max-w-xs md:max-w-md bg-green-300 font-extrabold bg-opacity-50 rounded-3xl border-2 border-black text-black  py-4 px-10 hover:bg-opacity-100"
+            className="my-4 max-w-xs md:max-w-max bg-green-300 font-extrabold bg-opacity-50 rounded-2xl border-2 border-black text-black  py-4 px-10 hover:bg-opacity-100"
             to={`/contact/${listing.userRef}?listingName=${listing.name}`}>
               Contact Landlord
             </Link>
