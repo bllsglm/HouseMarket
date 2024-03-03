@@ -1,10 +1,4 @@
-import {
-  addDoc,
-  doc,
-  getDoc,
-  serverTimestamp,
-  updateDoc,
-} from 'firebase/firestore'
+import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { db, firebaseAuth } from '../firebase/BaseConfig'
@@ -63,7 +57,6 @@ const EditListing = () => {
       if (docSnap.exists()) {
         setFormData({
           ...docSnap.data(),
-          images: [...images],
           address: docSnap.data().location,
         })
         setLoading(false)
@@ -205,7 +198,7 @@ const EditListing = () => {
     if (e.target.files) {
       setFormData((prevState) => ({
         ...prevState,
-        images: formData.images,
+        images: e.target.files,
       }))
     }
 
