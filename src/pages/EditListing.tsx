@@ -1,15 +1,27 @@
-import { doc, getDoc } from 'firebase/firestore'
-import  { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { db } from '../firebase/BaseConfig'
+import {
+  addDoc,
+  doc,
+  getDoc,
+  serverTimestamp,
+  updateDoc,
+} from 'firebase/firestore'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { db, firebaseAuth } from '../firebase/BaseConfig'
+import { toast } from 'react-toastify'
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from 'firebase/storage'
+import { v4 as uuidv4 } from 'uuid'
 
 const EditListing = () => {
-  
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const params = useParams()
   const [geoLocationEnabled, setGeoLocationEnabled] = useState(true)
-
-  const [listing, setListing] = useState(null)
 
   const [formData, setFormData] = useState({
     type: 'rent',
@@ -20,11 +32,11 @@ const EditListing = () => {
     furnished: false,
     address: '',
     offer: false,
-    regularPrice :0,
-    discountedPrice : 0,
-    images : {},
-    latitude : 0,
-    longitude :0,
+    regularPrice: 0,
+    discountedPrice: 0,
+    images: {},
+    latitude: 0,
+    longitude: 0,
   })
 
   const {
@@ -41,27 +53,26 @@ const EditListing = () => {
     images,
     latitude,
     longitude,
-    
   } = formData
 
-
-  useEffect(()=> {
+  useEffect(() => {
     const fetchListing = async () => {
-      const docRef = doc(db, 'listings' , params.listingId)
+      const docRef = doc(db, 'listings', params.listingId)
       const docSnap = await getDoc(docRef)
-      
-      if(docSnap.exists()){
-        setFormData(docSnap.data())
+
+      if (docSnap.exists()) {
+        setFormData({
+          ...docSnap.data(),
+          images: [...images],
+          address: docSnap.data().location,
+        })
         setLoading(false)
       }
     }
     fetchListing()
-   }, [params.listingId]
-  )
+  }, [params.listingId])
 
-  console.log('form data is',formData);
-  
-
+  console.log('form data is', formData)
 
   const onSubmit = async (e) => {
     e.preventDefault()
@@ -80,20 +91,19 @@ const EditListing = () => {
       return
     }
 
-
     // Geolocation & Location
     let geolocation = {}
     let location
 
-    
     if (geoLocationEnabled) {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${import.meta.env.VITE_GEOCODE_API_KEY}`
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${
+          import.meta.env.VITE_GEOCODE_API_KEY
+        }`
       )
 
       const data = await response.json()
-      // console.log(data);
-      
+
       geolocation.lat = data.results[0]?.geometry.location.lat ?? 0
       geolocation.lng = data.results[0]?.geometry.location.lng ?? 0
 
@@ -102,22 +112,23 @@ const EditListing = () => {
           ? undefined
           : data.results[0]?.formatted_address
 
-
-    if (location === undefined || location.includes('undefined')) {
+      if (location === undefined || location.includes('undefined')) {
         setLoading(false)
         toast.error('Please enter a correct address')
         return
       }
     } else {
       geolocation.lat = latitude
-      geolocation.lng = longitude      
+      geolocation.lng = longitude
     }
 
     // Store image in firebase
     const storeImage = async (image) => {
       return new Promise((resolve, reject) => {
         const storage = getStorage()
-        const fileName = `${firebaseAuth.currentUser.uid}-${image.name}-${uuidv4()}`
+        const fileName = `${firebaseAuth.currentUser.uid}-${
+          image.name
+        }-${uuidv4()}`
 
         const storageRef = ref(storage, 'images/' + fileName)
 
@@ -162,7 +173,6 @@ const EditListing = () => {
       return
     })
 
-    
     const formDataCopy = {
       ...formData,
       imageUrls,
@@ -175,10 +185,10 @@ const EditListing = () => {
     delete formDataCopy.address
     !formDataCopy.offer && delete formDataCopy.discountedPrice
 
-    const docRef = await addDoc(collection(db, 'listings'), formDataCopy)
+    await updateDoc(doc(db, 'listings', params.listingId), formDataCopy)
     setLoading(false)
     toast.success('Listing updated')
-    navigate(`/category/${formDataCopy.type}/${docRef.id}`)
+    navigate(`/category/${formDataCopy.type}/${params.listingId}`)
   }
 
   const onMutate = (e) => {
@@ -195,7 +205,7 @@ const EditListing = () => {
     if (e.target.files) {
       setFormData((prevState) => ({
         ...prevState,
-        images: formData.imageUrls,
+        images: formData.images,
       }))
     }
 
@@ -208,19 +218,15 @@ const EditListing = () => {
     }
   }
 
-
-
-
   return (
     <div className="flex items-center justify-center min-h-screen mb-16 bg-gray-200">
-    <div className="w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4 p-6 bg-white shadow-md rounded-lg">
-      <header className="mb-6">
-        <p className="text-2xl font-bold">Create a Listing</p>
-      </header>
+      <div className="w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4 p-6 bg-white shadow-md rounded-lg">
+        <header className="mb-6">
+          <p className="text-2xl font-bold">Edit Listing</p>
+        </header>
 
-      <form onSubmit={onSubmit} className="space-y-4">
-          <label className="block mb-2 font-semibold">Sell / Rent
-          </label>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <label className="block mb-2 font-semibold">Sell / Rent</label>
           <div className="flex mb-4">
             <button
               type="button"
@@ -245,7 +251,7 @@ const EditListing = () => {
               Rent
             </button>
           </div>
-  
+
           <label className="block mb-2 font-semibold">Name</label>
           <input
             className="block w-full px-4 py-2 mb-4 border border-gray-300 rounded"
@@ -257,7 +263,7 @@ const EditListing = () => {
             minLength={10}
             required
           />
-  
+
           <div className="flex mb-4">
             <div className="mr-4">
               <label className="block mb-2 font-semibold">Bedrooms</label>
@@ -286,7 +292,7 @@ const EditListing = () => {
               />
             </div>
           </div>
-  
+
           <label className="block mb-2 font-semibold">Parking spot</label>
           <div className="flex mb-4">
             <button
@@ -314,7 +320,7 @@ const EditListing = () => {
               No
             </button>
           </div>
-  
+
           <label className="block mb-2 font-semibold">Furnished</label>
           <div className="flex mb-4">
             <button
@@ -330,7 +336,9 @@ const EditListing = () => {
             </button>
             <button
               className={`flex-1 py-2 text-white font-semibold ${
-                !furnished && furnished !== null ? 'bg-green-500' : 'bg-gray-400'
+                !furnished && furnished !== null
+                  ? 'bg-green-500'
+                  : 'bg-gray-400'
               }`}
               type="button"
               id="furnished"
@@ -340,7 +348,7 @@ const EditListing = () => {
               No
             </button>
           </div>
-  
+
           <label className="block mb-2 font-semibold">Address</label>
           <textarea
             className="block w-full px-4 py-2 mb-4 border border-gray-300 rounded"
@@ -350,33 +358,34 @@ const EditListing = () => {
             onChange={onMutate}
             required
           />
-  
-      {!geoLocationEnabled && <div className="flex mb-4">
-            <div className="mr-4">
-              <label className="block mb-2 font-semibold">Latitude</label>
-              <input
-                className="block w-full px-4 py-2 mb-2 border border-gray-300 rounded"
-                type="number"
-                id="latitude"
-                value={latitude}
-                onChange={onMutate}
-                required
-              />
+
+          {!geoLocationEnabled && (
+            <div className="flex mb-4">
+              <div className="mr-4">
+                <label className="block mb-2 font-semibold">Latitude</label>
+                <input
+                  className="block w-full px-4 py-2 mb-2 border border-gray-300 rounded"
+                  type="number"
+                  id="latitude"
+                  value={latitude}
+                  onChange={onMutate}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block mb-2 font-semibold">Longitude</label>
+                <input
+                  className="block w-full px-4 py-2 mb-2 border border-gray-300 rounded"
+                  type="number"
+                  id="longitude"
+                  value={longitude}
+                  onChange={onMutate}
+                  required
+                />
+              </div>
             </div>
-            <div>
-              <label className="block mb-2 font-semibold">Longitude</label>
-              <input
-                className="block w-full px-4 py-2 mb-2 border border-gray-300 rounded"
-                type="number"
-                id="longitude"
-                value={longitude}
-                onChange={onMutate}
-                required
-              />
-            </div>
-          </div>
-          }
-  
+          )}
+
           <label className="block mb-2 font-semibold">Offer</label>
           <div className="flex mb-4">
             <button
@@ -392,8 +401,7 @@ const EditListing = () => {
             </button>
             <button
               className={`flex-1 py-2 text-white font-semibold 
-                ${!offer && offer !== null ? 'bg-green-500' : 'bg-gray-400'
-              }`}
+                ${!offer && offer !== null ? 'bg-green-500' : 'bg-gray-400'}`}
               type="button"
               id="offer"
               value={false}
@@ -402,7 +410,7 @@ const EditListing = () => {
               No
             </button>
           </div>
-  
+
           <label className="block mb-2 font-semibold">Regular Price</label>
           <div className="flex mb-4">
             <input
@@ -419,10 +427,12 @@ const EditListing = () => {
               <p className="flex items-center ml-2 text-gray-600">$/Month</p>
             )}
           </div>
-  
+
           {offer && (
             <>
-              <label className="block mb-2 font-semibold">Discounted Price</label>
+              <label className="block mb-2 font-semibold">
+                Discounted Price
+              </label>
               <input
                 className="block w-full px-4 py-2 mb-4 border border-gray-300 rounded"
                 type="number"
@@ -435,7 +445,7 @@ const EditListing = () => {
               />
             </>
           )}
-  
+
           <label className="block mb-2 font-semibold">Images</label>
           <p className="mb-4 text-gray-600">
             The first image will be the cover (max 6).
@@ -450,17 +460,17 @@ const EditListing = () => {
             multiple
             required
           />
-  
+
           <button
-          type="submit"
-          className="w-full py-3 font-semibold text-white bg-blue-500 rounded hover:bg-opacity-80 "
+            type="submit"
+            className="w-full py-3 font-semibold text-white bg-blue-500 rounded hover:bg-opacity-80 "
           >
-          Create Listing
+            Edit Listing
           </button>
-          </form>
-        </div>
+        </form>
       </div>
-  );
+    </div>
+  )
 }
 
 export default EditListing
