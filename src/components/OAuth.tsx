@@ -1,9 +1,9 @@
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
-import { GoogleIcon } from '../assets/icons'
 import { db, firebaseAuth } from '../firebase/BaseConfig'
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import googleIcon from '../assets/svg/googleIcon.svg'
 
 const OAuth = () => {
   const navigate = useNavigate()
@@ -47,7 +47,7 @@ const OAuth = () => {
         onClick={handleClick}
         className="bg-gray-200 rounded-full p-2 m-2 hover:scale-150 ease-in-out transition-transform duration-1000 mt-4"
       >
-        <GoogleIcon className="h-8 w-8" />
+        <img src={googleIcon} className="h-8 w-8" />
       </button>
     </>
   )

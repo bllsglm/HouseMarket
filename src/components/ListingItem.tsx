@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom'
-import { DeleteIcon } from '../assets/icons'
 import bedIcon from '../assets/svg/bedIcon.svg'
+import deleteIcon from '../assets/svg/deleteIcon.svg'
 
 export type ListingProp = {
   id: string
   bathrooms: number
   bedrooms: number
   name: string
-  imageUrls: string[]
+  imageUrls?: string[]
+  images?: FileList | null
   geolocation: { lat: number; lng: number }
   location: string
   offer?: boolean
@@ -17,6 +18,9 @@ export type ListingProp = {
   parking: boolean
   furnished: boolean
   timestamp: Date
+  address: string
+  latitude: number
+  longitude: number
   userRef: string
 }
 
@@ -34,7 +38,7 @@ const ListingItem = ({ listing, id, onDelete }: listingItemProps) => {
         className="flex items-center"
       >
         <img
-          src={listing.imageUrls[0]}
+          src={listing.imageUrls && listing.imageUrls[0]}
           alt={listing.name}
           className="w-24 h-24 rounded-lg object-cover"
         />
@@ -58,9 +62,9 @@ const ListingItem = ({ listing, id, onDelete }: listingItemProps) => {
         </div>
       </Link>
       {onDelete && (
-        <DeleteIcon
+        <img
+          src={deleteIcon}
           onClick={() => onDelete(listing.id, listing.name)}
-          fill="red"
           className="cursor-pointer w-6 h-6"
         />
       )}

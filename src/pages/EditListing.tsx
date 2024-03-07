@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -13,11 +14,27 @@ import { v4 as uuidv4 } from 'uuid'
 
 const EditListing = () => {
   const navigate = useNavigate()
-  const [loading, setLoading] = useState(true)
-  const params = useParams()
-  const [geoLocationEnabled, setGeoLocationEnabled] = useState(true)
 
-  const [formData, setFormData] = useState({
+  const params = useParams()
+
+  const [, setLoading] = useState(true)
+  const [geoLocationEnabled] = useState(true)
+
+  const [formData, setFormData] = useState<{
+    type: string
+    name: string
+    bedrooms: number
+    bathrooms: number
+    parking: boolean
+    furnished: boolean
+    address?: string
+    offer: boolean
+    regularPrice: string
+    discountedPrice?: string
+    images?: [] | null | FileList
+    latitude: number
+    longitude: number
+  }>({
     type: 'rent',
     name: '',
     bedrooms: 1,
@@ -26,9 +43,9 @@ const EditListing = () => {
     furnished: false,
     address: '',
     offer: false,
-    regularPrice: 0,
-    discountedPrice: 0,
-    images: {},
+    regularPrice: '0',
+    discountedPrice: '0',
+    images: null,
     latitude: 0,
     longitude: 0,
   })
@@ -51,41 +68,43 @@ const EditListing = () => {
 
   useEffect(() => {
     const fetchListing = async () => {
+      if (!params.listingId) return
       const docRef = doc(db, 'listings', params.listingId)
       const docSnap = await getDoc(docRef)
 
       if (docSnap.exists()) {
-        setFormData({
-          ...docSnap.data(),
-          address: docSnap.data().location,
-        })
+        const address = docSnap.data().location
+        setFormData((prevState) => ({
+          ...prevState,
+          ...docSnap.data(), // Merge existing state with fetched data
+          address,
+        }))
+
         setLoading(false)
       }
     }
     fetchListing()
   }, [params.listingId])
 
-  console.log('form data is', formData)
-
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     setLoading(true)
 
-    if (discountedPrice >= regularPrice) {
+    if (discountedPrice && discountedPrice >= regularPrice) {
       setLoading(false)
       toast.error('Discounted price needs to be less than regular price')
       return
     }
 
-    if (images.length > 6) {
+    if (images && images.length > 6) {
       setLoading(false)
       toast.error('Max 6 images')
       return
     }
 
     // Geolocation & Location
-    let geolocation = {}
+    const geolocation: { lng?: number; lat?: number } = {}
     let location
 
     if (geoLocationEnabled) {
@@ -116,10 +135,10 @@ const EditListing = () => {
     }
 
     // Store image in firebase
-    const storeImage = async (image) => {
+    const storeImage = async (image: File) => {
       return new Promise((resolve, reject) => {
         const storage = getStorage()
-        const fileName = `${firebaseAuth.currentUser.uid}-${
+        const fileName = `${firebaseAuth.currentUser?.uid}-${
           image.name
         }-${uuidv4()}`
 
@@ -159,7 +178,7 @@ const EditListing = () => {
     }
 
     const imageUrls = await Promise.all(
-      [...images].map((image) => storeImage(image))
+      [...(images as Array<File>)].map((image) => storeImage(image))
     ).catch(() => {
       setLoading(false)
       toast.error('Images not uploaded')
@@ -171,6 +190,7 @@ const EditListing = () => {
       imageUrls,
       geolocation,
       timestamp: serverTimestamp(),
+      location,
     }
 
     formDataCopy.location = address
@@ -178,35 +198,37 @@ const EditListing = () => {
     delete formDataCopy.address
     !formDataCopy.offer && delete formDataCopy.discountedPrice
 
+    if (!params.listingId) return
     await updateDoc(doc(db, 'listings', params.listingId), formDataCopy)
     setLoading(false)
     toast.success('Listing updated')
     navigate(`/category/${formDataCopy.type}/${params.listingId}`)
   }
 
-  const onMutate = (e) => {
-    let boolean = null
+  const onMutate = (e: React.FormEvent) => {
+    let boolean: boolean | null = null
 
-    if (e.target.value === 'true') {
+    if ((e.target as HTMLInputElement).value === 'true') {
       boolean = true
     }
-    if (e.target.value === 'false') {
+    if ((e.target as HTMLInputElement).value === 'false') {
       boolean = false
     }
 
     // Files
-    if (e.target.files) {
+    if ((e.target as HTMLInputElement).files) {
       setFormData((prevState) => ({
         ...prevState,
-        images: e.target.files,
+        images: (e.target as HTMLInputElement).files,
       }))
     }
 
     // Text/Booleans/Numbers
-    if (!e.target.files) {
+    if (!(e.target as HTMLInputElement).files) {
       setFormData((prevState) => ({
         ...prevState,
-        [e.target.id]: boolean ?? e.target.value,
+        [(e.target as HTMLInputElement).id]:
+          boolean ?? (e.target as HTMLInputElement).value,
       }))
     }
   }
@@ -294,10 +316,8 @@ const EditListing = () => {
               }`}
               type="button"
               id="parking"
-              value={true}
+              value={String(true)}
               onClick={onMutate}
-              min="1"
-              max="50"
             >
               Yes
             </button>
@@ -307,7 +327,7 @@ const EditListing = () => {
               }`}
               type="button"
               id="parking"
-              value={false}
+              value={String(false)}
               onClick={onMutate}
             >
               No
@@ -322,7 +342,7 @@ const EditListing = () => {
               }`}
               type="button"
               id="furnished"
-              value={true}
+              value={String(true)}
               onClick={onMutate}
             >
               Yes
@@ -335,7 +355,7 @@ const EditListing = () => {
               }`}
               type="button"
               id="furnished"
-              value={false}
+              value={String(false)}
               onClick={onMutate}
             >
               No
@@ -345,7 +365,6 @@ const EditListing = () => {
           <label className="block mb-2 font-semibold">Address</label>
           <textarea
             className="block w-full px-4 py-2 mb-4 border border-gray-300 rounded"
-            type="text"
             id="address"
             value={address}
             onChange={onMutate}
@@ -387,7 +406,7 @@ const EditListing = () => {
               }`}
               type="button"
               id="offer"
-              value={true}
+              value={String(true)}
               onClick={onMutate}
             >
               Yes
@@ -397,7 +416,7 @@ const EditListing = () => {
                 ${!offer && offer !== null ? 'bg-green-500' : 'bg-gray-400'}`}
               type="button"
               id="offer"
-              value={false}
+              value={String(false)}
               onClick={onMutate}
             >
               No

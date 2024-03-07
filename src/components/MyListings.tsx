@@ -77,7 +77,9 @@ const MyListings = () => {
               >
                 <div className="flex flex-col sm:flex-row  shadow-2xl gap-4 bg-slate-100 m-2 p-4 rounded-2xl hover:bg-green-100 cursor-pointer">
                   <img
-                    src={mylisting.data.imageUrls[0]}
+                    src={
+                      mylisting.data.imageUrls && mylisting.data.imageUrls[0]
+                    }
                     alt="image"
                     className="w-32 h-32 rounded-2xl"
                   />

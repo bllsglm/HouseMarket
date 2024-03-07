@@ -1,36 +1,27 @@
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { firebaseAuth } from "../firebase/BaseConfig"
-import { sendPasswordResetEmail } from "firebase/auth"
-import { toast } from "react-toastify"
-import ArrowRightIcon from "../assets/icons/KeyboardArrowRightIcon"
-
-
-ArrowRightIcon
-toast
-sendPasswordResetEmail
-firebaseAuth
-Link
-useState
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { firebaseAuth } from '../firebase/BaseConfig'
+import { sendPasswordResetEmail } from 'firebase/auth'
+import { toast } from 'react-toastify'
+import arrowRightIcon from '../assets/svg/keyboardArrowRightIcon.svg'
 
 const ForgotPassword = () => {
-  const [ email, setEmail ] = useState('')
+  const [email, setEmail] = useState('')
 
-  const onChange = (e) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value)
   }
 
-
-  const onSubmit = async(e : React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      await sendPasswordResetEmail(firebaseAuth,email)
+      await sendPasswordResetEmail(firebaseAuth, email)
       toast.success('Email was sent')
     } catch (err) {
-      toast.error(err?.data?.message || err.message)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      toast.error((err as any)?.data?.message || (err as any).message)
     }
   }
-
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
@@ -40,7 +31,7 @@ const ForgotPassword = () => {
 
       <main className="relative shadow-lg">
         <form onSubmit={onSubmit}>
-          <input 
+          <input
             type="email"
             placeholder="Email"
             id="email"
@@ -48,22 +39,30 @@ const ForgotPassword = () => {
             onChange={onChange}
             className="block mb-8  outline-none border-b-2 p-2 "
           />
-          <Link to='/signIn' className="block absolute right-0 bottom-12 mt-1 font-bold text-green-600">
+          <Link
+            to="/signIn"
+            className="block absolute right-0 bottom-12 mt-1 font-bold text-green-600"
+          >
             Sign In
           </Link>
 
           <div>
             <div></div>
-            <div className='relative'>
-               <button type="submit" className='my-2 w-full text-white bg-blue-500 p-1 rounded-full'>Send Reset Link</button>
-               <ArrowRightIcon className='absolute right-0 top-0 w-8 h-12 cursor-pointer' fill='#fff'/>
+            <div className="relative">
+              <button
+                type="submit"
+                className="my-2 w-full text-white bg-blue-500 p-1 rounded-full"
+              >
+                Send Reset Link
+              </button>
+              <img
+                src={arrowRightIcon}
+                className="absolute right-0 top-0 w-8 h-12 cursor-pointer"
+              />
             </div>
-           
           </div>
-
         </form>
       </main>
-
     </div>
   )
 }
