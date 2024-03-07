@@ -7,9 +7,17 @@ import Spinner from './Spinner'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 
+type dataProp = {
+  id: string
+  type: string
+  name: string
+  price: string
+  image: string[]
+}
+
 const Slider = () => {
   const [loading, setLoading] = useState(true)
-  const [listings, setListings] = useState(null)
+  const [listings, setListings] = useState<dataProp[] | null>(null)
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -24,7 +32,7 @@ const Slider = () => {
         const querySnap = await getDocs(q)
 
         const imagesList = []
-        const data = []
+        const data: dataProp[] = []
         querySnap.forEach((doc) => {
           data.push({
             id: doc.id,
@@ -40,25 +48,23 @@ const Slider = () => {
           imagesList.push(...doc.data().imageUrls)
         })
 
-        // setListings(imagesList)
         setListings(data)
 
         setLoading(false)
       } catch (error) {
-        toast.error(error!.data?.message || error.message)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        toast.error((error as any)?.data?.message || (error as any).message)
       }
     }
 
     fetchImages()
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (loading) {
     return <Spinner />
   }
 
-  if (listings.length === 0) {
+  if (listings?.length === 0) {
     return <></>
   }
 
@@ -74,7 +80,7 @@ const Slider = () => {
       onSlideChange={() => console.log('slide change')}
       onSwiper={(swiper) => console.log(swiper)}
     >
-      {listings.map((dataPoint, index) => (
+      {listings?.map((dataPoint, index) => (
         <SwiperSlide key={index}>
           <Link to={`/category/${dataPoint.type}/${dataPoint.id}`}>
             <div
