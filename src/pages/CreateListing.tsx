@@ -16,8 +16,24 @@ import {
 
 const CreateListing = () => {
   const [loading, setLoading] = useState(false)
-  const [geoLocationEnabled, setGeoLocationEnabled] = useState(true)
-  const [formData, setFormData] = useState({
+  const [geoLocationEnabled] = useState(true)
+  const [formData, setFormData] = useState<{
+    type: string
+    name: string
+    bedrooms: number
+    bathrooms: number
+    parking: boolean
+    furnished: boolean
+    address?: string
+    offer: boolean
+    regularPrice: string
+    discountedPrice?: string
+    images?: [] | null | FileList
+    latitude: number
+    longitude: number
+    userRef: string
+    location: string | null
+  }>({
     type: 'rent',
     name: '',
     bedrooms: 1,
@@ -26,11 +42,13 @@ const CreateListing = () => {
     furnished: false,
     address: '',
     offer: false,
-    regularPrice: 0,
-    discountedPrice: 0,
-    images: {},
+    regularPrice: '0',
+    discountedPrice: '0',
+    images: null,
     latitude: 0,
     longitude: 0,
+    userRef: '',
+    location: '',
   })
 
   const {
@@ -69,25 +87,25 @@ const CreateListing = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted, navigate])
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     setLoading(true)
 
-    if (discountedPrice >= regularPrice) {
+    if (discountedPrice && discountedPrice >= regularPrice) {
       setLoading(false)
       toast.error('Discounted price needs to be less than regular price')
       return
     }
 
-    if (images.length > 6) {
+    if (images && images.length > 6) {
       setLoading(false)
       toast.error('Max 6 images')
       return
     }
 
     // Geolocation & Location
-    let geolocation = {}
+    const geolocation: { lat: number; lng: number } = { lat: 0, lng: 0 }
     let location
 
     if (geoLocationEnabled) {
@@ -118,10 +136,10 @@ const CreateListing = () => {
     }
 
     // Store image in firebase
-    const storeImage = async (image) => {
+    const storeImage = async (image: File) => {
       return new Promise((resolve, reject) => {
         const storage = getStorage()
-        const fileName = `${firebaseAuth.currentUser.uid}-${
+        const fileName = `${firebaseAuth?.currentUser?.uid}-${
           image.name
         }-${uuidv4()}`
 
@@ -161,7 +179,7 @@ const CreateListing = () => {
     }
 
     const imageUrls = await Promise.all(
-      [...images].map((image) => storeImage(image))
+      [...(images as Array<File>)].map((image) => storeImage(image))
     ).catch(() => {
       setLoading(false)
       toast.error('Images not uploaded')
@@ -186,29 +204,30 @@ const CreateListing = () => {
     navigate(`/category/${formDataCopy.type}/${docRef.id}`)
   }
 
-  const onMutate = (e) => {
-    let boolean = null
+  const onMutate = (e: React.FormEvent) => {
+    let boolean: boolean | null = null
 
-    if (e.target.value === 'true') {
+    if ((e.target as HTMLInputElement).value === 'true') {
       boolean = true
     }
-    if (e.target.value === 'false') {
+    if ((e.target as HTMLInputElement).value === 'false') {
       boolean = false
     }
 
     // Files
-    if (e.target.files) {
+    if ((e.target as HTMLInputElement).files) {
       setFormData((prevState) => ({
         ...prevState,
-        images: e.target.files,
+        images: (e.target as HTMLInputElement).files,
       }))
     }
 
     // Text/Booleans/Numbers
-    if (!e.target.files) {
+    if (!(e.target as HTMLInputElement).files) {
       setFormData((prevState) => ({
         ...prevState,
-        [e.target.id]: boolean ?? e.target.value,
+        [(e.target as HTMLInputElement).id]:
+          boolean ?? (e.target as HTMLInputElement).value,
       }))
     }
   }
@@ -300,10 +319,8 @@ const CreateListing = () => {
               }`}
               type="button"
               id="parking"
-              value={true}
+              value={String(true)}
               onClick={onMutate}
-              min="1"
-              max="50"
             >
               Yes
             </button>
@@ -313,7 +330,7 @@ const CreateListing = () => {
               }`}
               type="button"
               id="parking"
-              value={false}
+              value={String(false)}
               onClick={onMutate}
             >
               No
@@ -328,7 +345,7 @@ const CreateListing = () => {
               }`}
               type="button"
               id="furnished"
-              value={true}
+              value={String(true)}
               onClick={onMutate}
             >
               Yes
@@ -341,7 +358,7 @@ const CreateListing = () => {
               }`}
               type="button"
               id="furnished"
-              value={false}
+              value={String(false)}
               onClick={onMutate}
             >
               No
@@ -351,7 +368,6 @@ const CreateListing = () => {
           <label className="block mb-2 font-semibold">Address</label>
           <textarea
             className="block w-full px-4 py-2 mb-4 border border-gray-300 rounded"
-            type="text"
             id="address"
             value={address}
             onChange={onMutate}
