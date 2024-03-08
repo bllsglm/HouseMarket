@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   collection,
   getDocs,
@@ -50,7 +51,7 @@ const Offer = () => {
         setListings(listings)
         setLoading(false)
       } catch (error) {
-        toast.error(error!.data?.message || error.message)
+        toast.error((error as any).data?.message || (error as any).message)
       }
     }
 

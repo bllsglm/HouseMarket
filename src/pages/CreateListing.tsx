@@ -32,7 +32,7 @@ const CreateListing = () => {
     latitude: number
     longitude: number
     userRef: string
-    location: string | null
+    location: string | null | undefined
   }>({
     type: 'rent',
     name: '',
@@ -409,7 +409,7 @@ const CreateListing = () => {
               }`}
               type="button"
               id="offer"
-              value={true}
+              value={String(true)}
               onClick={onMutate}
             >
               Yes
@@ -419,7 +419,7 @@ const CreateListing = () => {
                 ${!offer && offer !== null ? 'bg-green-500' : 'bg-gray-400'}`}
               type="button"
               id="offer"
-              value={false}
+              value={String(false)}
               onClick={onMutate}
             >
               No
