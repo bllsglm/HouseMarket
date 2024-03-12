@@ -27,7 +27,7 @@ const CreateListing = () => {
     address?: string
     offer: boolean
     regularPrice: string
-    discountedPrice?: string
+    discountedPrice?: number | string
     images?: [] | null | FileList
     latitude: number
     longitude: number
@@ -92,7 +92,14 @@ const CreateListing = () => {
 
     setLoading(true)
 
-    if (discountedPrice && discountedPrice >= regularPrice) {
+    if (discountedPrice && Number(discountedPrice) >= Number(regularPrice)) {
+      console.log(
+        'discounted Price ',
+        discountedPrice,
+        'regular Price',
+        regularPrice
+      )
+
       setLoading(false)
       toast.error('Discounted price needs to be less than regular price')
       return
