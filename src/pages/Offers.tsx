@@ -12,14 +12,19 @@ import { useEffect, useState } from 'react'
 import { db } from '../firebase/BaseConfig'
 import { toast } from 'react-toastify'
 import Spinner from '../components/Spinner'
-import ListingItem from '../components/ListingItem'
+import ListingItem, { ListingProp } from '../components/ListingItem'
+import { DocumentData } from 'firebase/firestore'
 
-startAfter
+export type ListingsProps = {
+  id: string
+  data: DocumentData
+}
 
 const Offer = () => {
-  const [listings, setListings] = useState(null)
+  const [listings, setListings] = useState<ListingsProps[] | null>(null)
   const [loading, setLoading] = useState(true)
-  const [lastFetchedListing, setLastFetchListing] = useState(null)
+  const [lastFetchedListing, setLastFetchListing] =
+    useState<DocumentData | null>(null)
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -39,7 +44,7 @@ const Offer = () => {
         const querySnap = await getDocs(q)
         const lastVisible = querySnap.docs[querySnap.docs.length - 1]
         setLastFetchListing(lastVisible)
-        const listings = []
+        const listings: ListingsProps[] | null = []
 
         querySnap.forEach((doc) => {
           return listings.push({
@@ -76,7 +81,7 @@ const Offer = () => {
       const querySnap = await getDocs(q)
       const lastVisible = querySnap.docs[querySnap.docs.length - 1]
       setLastFetchListing(lastVisible)
-      const listings = []
+      const listings: ListingsProps[] = []
 
       querySnap.forEach((doc) => {
         return listings.push({
@@ -85,7 +90,10 @@ const Offer = () => {
         })
       })
 
-      setListings((prevState) => [...prevState, ...listings])
+      setListings((prevState) => [
+        ...(prevState as ListingsProps[]),
+        ...listings,
+      ])
       setLoading(false)
     } catch (error) {
       toast.error('There is no more listings to display')
@@ -106,7 +114,7 @@ const Offer = () => {
               {listings.map((listing) => (
                 <h3 key={listing.id}>
                   <ListingItem
-                    listing={listing.data}
+                    listing={listing.data as ListingProp}
                     id={listing.id}
                     key={listing.id}
                   />

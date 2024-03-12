@@ -46,7 +46,6 @@ const MyListings = () => {
       })
 
       setMyListings(myAllListings)
-      console.log(myAllListings)
 
       setLoading(false)
     }
